@@ -1,0 +1,14 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- ssv-0.3
+- text-1.2.2.1
+resolver: lts-6.15
+docker:
+  enable: true
+image:
+  container:
+    name: 41px/loadcp
+    base: fpco/stack-run
