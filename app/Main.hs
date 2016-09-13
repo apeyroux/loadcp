@@ -3,17 +3,19 @@
 import Text.SSV
 import Database.PostgreSQL.Simple
 import Data.List.Extra
+import Data.Monoid
 import System.Environment
 
 data Ville = Ville { villeInse :: String
                    , villeName :: String
-                   , villeLigne5 :: String
-                   , villeCP :: String } deriving (Show, Eq, Read)
+                   , villeCP :: String
+                   , villeAcheminement :: String
+                   , villeLigne5 :: String } deriving (Show, Eq, Read)
 
 entry2ville :: [String] -> Maybe Ville
 entry2ville e = case e of
   [] -> Nothing
-  [inse, nom, cp, _, ligne5] -> Just (Ville (trim inse) (trim nom) (trim cp) (trim ligne5))
+  [inse, nom, cp, acheminement, ligne5] -> Just (Ville (trim inse) (trim nom) (trim cp) (trim acheminement) (trim ligne5))
   _ -> Nothing
 
 
@@ -21,10 +23,12 @@ insert2db :: Connection -> Maybe Ville -> IO ()
 insert2db c v = do
   case v of
     Just ville -> do
-      _ <- execute c "insert into villes (inse,name,ligne5,cp) values (?,?,?,?)" [villeInse ville
+      putStrLn $ "Traitement de " <> villeName ville <> " ..."
+      _ <- execute c "insert into villes (inse,name,cp,acheminement,ligne5) values (?,?,?,?,?)" [villeInse ville
                                                                         , villeName ville
-                                                                        , villeLigne5 ville
-                                                                        , villeCP ville]
+                                                                        , villeCP ville
+                                                                        , villeAcheminement ville
+                                                                        , villeLigne5 ville]
       return ()
     Nothing -> return ()
              
